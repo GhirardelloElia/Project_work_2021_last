@@ -219,6 +219,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Allarmi.cs" />
     <Compile Include="Commessa.cs" />
     <Compile Include="CommessaDaInviare.cs" />
     <Compile Include="MQTTManager.cs" />
