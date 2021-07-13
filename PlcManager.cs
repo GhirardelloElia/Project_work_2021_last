@@ -71,6 +71,12 @@ namespace Progetto_Main
                 commessa.TargetVelocita));
         }
 
+        public void GetAllarmi()
+        {
+            var allarmi = new Allarmi[32];
+            allarmi = (Allarmi[])plc.ReadNodeValue(PLCGlobals.PezziProdotti);
+        }
+
         public void GetStatoMacchina()
         {
             var stato = plc.ReadNodeValue(PLCGlobals.StatoMacchina);
