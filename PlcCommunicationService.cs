@@ -10,7 +10,7 @@ namespace Progetto_Main
 {
     public class PlcCommunicationService
     {
-        private Session Session;
+        public Session Session;
         private bool IsSessionStarted = false;
         public event EventHandler<NodeValueChangedNotification> NodeValueChanged;
         public PlcCommunicationService()
@@ -136,7 +136,8 @@ namespace Progetto_Main
 
         public object ReadNodeValue(string nodeId)
         {
-            return Session.ReadValue(nodeId).Value;
+            var foo = Session.ReadValue(nodeId); // TODO: NULL EXCEPTION
+            return foo.Value;
         }
         public Node ReadNode(string nodeId)
         {

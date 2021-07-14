@@ -14,10 +14,10 @@ namespace Progetto_Main
         MqttClient client;
         string clientId;
 
-
+        
         // this code runs when the main window opens (start of the app)
         public MQTTManager()
-        {
+        {// Crea + oggetti client per diversi subs
             string BrokerAddress = "test.mosquitto.org";
 
             client = new MqttClient(BrokerAddress);

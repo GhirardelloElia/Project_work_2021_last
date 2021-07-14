@@ -11,7 +11,7 @@ namespace Progetto_Main
     {
         private SqlConnection _sqlConnection = new SqlConnection("Server=tcp:servergestionale.database.windows.net,1433;Initial Catalog=DbProgetto2021;Persist Security Info=False;User ID=amministratore;Password=Vmware1!;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
 
-        public int UpdateCommessaInCorso(int pezziBuoni, int pezziScarti, int pezziTotali, int pezziDaFare, string codiceCommessa)
+        public int UpdateCommessaInCorso(int pezziBuoni, int pezziScarti, int pezziTotali, int pezziDaFare, string codiceCommessa, string codiceCliente)
         {
             try
             {
@@ -54,7 +54,7 @@ namespace Progetto_Main
                 command.CommandType = System.Data.CommandType.Text;
 
                 command.CommandText = $"UPDATE tbCommessa " +
-                    $"SET In_Produzione = '0', Prodotta = '1' " +
+                    $"SET Da_produrre = '0', In_Produzione = '0', Prodotta = '1' " +
                     $"WHERE Codice_commessa = '{codiceCommessa}'; ";
 
                 command.ExecuteNonQuery();
@@ -72,7 +72,7 @@ namespace Progetto_Main
             return 0;
         }
 
-        public int RegistraMessaggio(string messageContent, bool isFromUser)
+        public int RegistraMessaggio(string messageContent, bool isFromPLC)
         {
             try
             {
@@ -83,7 +83,7 @@ namespace Progetto_Main
                 command.CommandType = System.Data.CommandType.Text;
 
                 command.CommandText = $"INSERT INTO tbStoricoMessaggi " +
-                    $"VALUES ({messageContent}, '{(isFromUser ? 1 : 0)}')";
+                    $"VALUES ({messageContent}, '{(isFromPLC ? 1 : 0)}')";
 
                 command.ExecuteNonQuery();
             }
@@ -98,6 +98,73 @@ namespace Progetto_Main
             }
 
             return 0;
+        }
+
+        public Messaggio[] GetMessaggiDB()
+        {
+            try
+            {
+                _sqlConnection.Open();
+
+                SqlCommand command = new SqlCommand();
+                command.Connection = _sqlConnection;
+                command.CommandType = System.Data.CommandType.Text;
+                command.CommandText = "SELECT TOP 8 * from tbStoricoMessaggi";
+                
+                SqlDataReader reader = command.ExecuteReader();
+                int i = 0;
+                Messaggio[] messaggi = new Messaggio[8]; 
+                while (reader.Read())
+                {
+                    Messaggio messaggio = new Messaggio()
+                    {
+                        Text = Convert.ToString(reader[0]),
+                        IsSent = Convert.ToBoolean(reader[1]),
+                        TimeStamp = Convert.ToString(reader[2])
+                    };
+                    messaggi[i] = messaggio;
+                    i++;
+                }
+
+                return messaggi;
+            }
+            catch 
+            {
+                // TODO: Catch
+                return new Messaggio[0];
+            }
+            finally
+            {
+                _sqlConnection.Close();
+            }
+        }
+
+        public void AggiornaStatoPLC(string codiceCommessa, string velocita, string ore, int inAllarme, int StatoPLC)
+        {
+            try
+            {
+                _sqlConnection.Open();
+
+                SqlCommand command = new SqlCommand();
+                command.Connection = _sqlConnection;
+                command.CommandType = System.Data.CommandType.Text;
+
+                command.CommandText = $"UPDATE tbStatoPLC " +
+                    $"SET Codice_commessa_in_produzione = {codiceCommessa}, Velocita_macchina = {velocita}," +
+                    $" Ore_lavorazione = {ore}," +
+                    $" In_allarme = {inAllarme}, StatoPLC = {StatoPLC} " +
+                    $"WHERE 1 = 1; ";
+
+                command.ExecuteNonQuery();
+            }
+            catch
+            {
+                // TODO: Catch
+            }
+            finally
+            {
+                _sqlConnection.Close();
+            }
         }
     }
 }
