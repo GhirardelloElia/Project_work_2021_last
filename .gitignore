@@ -3,3 +3,7 @@
 ################################################################################
 
 /.vs/Progetto_Main/v16/.suo
+/bin/Debug
+/obj/Debug
+/packages
+/Properties
