@@ -139,7 +139,7 @@ namespace Progetto_Main
             }
         }
 
-        public void AggiornaStatoPLC(string codiceCommessa, string velocita, string ore, int inAllarme, int StatoPLC)
+        public void AggiornaStatoPLC(string codiceCommessa, int velocita, int inAllarme, int StatoPLC)
         {
             try
             {
@@ -151,7 +151,6 @@ namespace Progetto_Main
 
                 command.CommandText = $"UPDATE tbStatoPLC " +
                     $"SET Codice_commessa_in_produzione = {codiceCommessa}, Velocita_macchina = {velocita}," +
-                    $" Ore_lavorazione = {ore}," +
                     $" In_allarme = {inAllarme}, StatoPLC = {StatoPLC} " +
                     $"WHERE 1 = 1; ";
 

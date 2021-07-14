@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Threading;
+using Newtonsoft.Json;
 using uPLibrary.Networking.M2Mqtt;
 using uPLibrary.Networking.M2Mqtt.Messages;
 
@@ -14,63 +13,57 @@ namespace Progetto_Main
         MqttClient client;
         string clientId;
 
-        
-        // this code runs when the main window opens (start of the app)
         public MQTTManager()
-        {// Crea + oggetti client per diversi subs
-            string BrokerAddress = "test.mosquitto.org";
+        {
 
-            client = new MqttClient(BrokerAddress);
-
-            // register a callback-function (we have to implement, see below) which is called by the library when a message was received
-            client.MqttMsgPublishReceived += client_MqttMsgPublishReceived;
-
-            // use a unique id as client id, each time we start the application
-            clientId = Guid.NewGuid().ToString();
-
-            client.Connect(clientId);
         }
 
-
-        // this code runs when the main window closes (end of the app)
         public void Dispose()
         {
             client.Disconnect();
         }
 
-
-        // this code runs when the button "Subscribe" is clicked
         public void Subscribe()
         {
-                // whole topic
-                string Topic = "/THIENEPLC/sage/virus/IN/IOT";
+            string BrokerAddress = "test.mosquitto.org";
 
-                // subscribe to the topic with QoS 2
-                client.Subscribe(new string[] { Topic }, new byte[] { 2 });
+            client = new MqttClient(BrokerAddress);
+
+            client.MqttMsgPublishReceived += client_MqttMsgPublishReceived;
+
+            clientId = Guid.NewGuid().ToString();
+
+            client.Connect(clientId);
+
+            string messaggistica = "/THIENEPLC/sage/virus/IN/Message";
+            string commesse = "/THIENEPLC/sage/virus/IN/IOT";
+
+            client.Subscribe(new string[] { messaggistica, commesse }, new byte[] { 2 });
         }
 
-        public void SubscribeMessaggi()
-        {
-            // /THIENEPLC/sage/virus/IN/Message
-
-        }
-
-        // this code runs when the button "Publish" is clicked
         public void Publish (string message)
         {
-                // whole topic
-                string Topic = "/THIENEPLC/sage/virus/OUT/IOT";
+            string Topic = "/THIENEPLC/sage/virus/OUT/IOT";
 
-                // publish a message with QoS 2
-                client.Publish(Topic, Encoding.UTF8.GetBytes(message), MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE, true);
+            client.Publish(Topic, Encoding.UTF8.GetBytes(message), MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE, true);
         }
 
-        // this code runs when a message was received
         public void client_MqttMsgPublishReceived(object sender, MqttMsgPublishEventArgs e)
         {
             string ReceivedMessage = Encoding.UTF8.GetString(e.Message);
-
+            
             Console.WriteLine(ReceivedMessage);
+            PlcManager plc = new PlcManager();
+
+            if (e.Topic == "/THIENEPLC/sage/virus/IN/Message")
+            {
+                plc.ScriviMessaggiAPlc();
+            }
+            else if (e.Topic == "/THIENEPLC/sage/virus/IN/IOT")
+            {
+                var commessa = JsonConvert.DeserializeObject<Commessa>(ReceivedMessage);
+                plc.ScriviCommessaInCoda(commessa);
+            }
         }
     }
 }

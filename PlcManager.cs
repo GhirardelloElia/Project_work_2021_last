@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using System.Timers;
 
 namespace Progetto_Main
 {
@@ -11,12 +11,27 @@ namespace Progetto_Main
         PlcCommunicationService plc = new PlcCommunicationService();
         ServerManager serverManager = new ServerManager();
 
-        public void LeggiMessaggioOperatore()
+        public void Start()
         {
-            string messaggio = "";
-            plc.StartAsync("opc.tcp://192.168.1.91:4840").GetAwaiter().GetResult();
+            StartNodeValues();
+            Timer timer = new Timer(3000);
+            timer.Elapsed += Timer_Elapsed;
+        }
 
-            serverManager.RegistraMessaggio(messaggio, true);
+        private void Timer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            AggiornaStatoPLC();
+        }
+
+        public void AggiornaStatoPLC()
+        {
+            plc.StartAsync("opc.tcp://192.168.1.91:4840").GetAwaiter().GetResult();
+            string codiceCommessa = (string)plc.ReadNodeValue(PLCGlobals.Codice_commessa_in_corso);
+            int velocitaMacchina = (int)plc.ReadNodeValue(PLCGlobals.Velocita_attuale);
+            bool inWarning = (bool)plc.ReadNodeValue(PLCGlobals.Warning_in_corso);
+            bool inEmergenza = (bool)plc.ReadNodeValue(PLCGlobals.Emergenza_in_corso);
+
+            serverManager.AggiornaStatoPLC(codiceCommessa, velocitaMacchina, inEmergenza || inWarning ? 1 : 0, 1);
         }
 
         // TODO: Il ricevimessaggio è un evento onchange della variabile. Ricorda di specificare
@@ -41,13 +56,13 @@ namespace Progetto_Main
             plc.WriteToNode(new NodeWritingRequest<string>(PLCGlobals.Codice_commessa_coda,
                 commessa.CodiceCommessa));
             plc.WriteToNode(new NodeWritingRequest<string>(PLCGlobals.Codice_prodotto_coda,
-                commessa.CodiceProdotto));
+                commessa.NomeProdotto));
             plc.WriteToNode(new NodeWritingRequest<string>(PLCGlobals.Codice_cliente_coda,
-                commessa.CodiceCliente));
+                commessa.NomeCliente));
             plc.WriteToNode(new NodeWritingRequest<Int16>(PLCGlobals.PezziDaProdurre_coda,
-                commessa.PezziDaFare));
+                commessa.Quantita));
             plc.WriteToNode(new NodeWritingRequest<float>(PLCGlobals.Target_velocita_coda,
-                commessa.TargetVelocita));
+                commessa.VelocitaMacchina));
         }
 
         public Allarme[] GetAllarmi()
@@ -79,8 +94,9 @@ namespace Progetto_Main
         public void ScriviMessaggiAPlc()
         {
             plc.StartAsync("opc.tcp://192.168.1.91:4840").GetAwaiter().GetResult();
-            // TODO: piglia top 8 messaggi dalla tabella e ficca dentro PLC
-            // Messaggio[] messaggi = serverManager.GetMessaggiDB();
+            Messaggio[] messaggi = serverManager.GetMessaggiDB();
+
+            /*
             Messaggio[] messaggi = new Messaggio[8]
             {
                 new Messaggio() { Text = "uno", IsSent = false, TimeStamp = "14/07/2021"},
@@ -92,6 +108,7 @@ namespace Progetto_Main
                 new Messaggio() { Text = "sette", IsSent = false, TimeStamp = "14/07/2021"},
                 new Messaggio() { Text = "otto", IsSent = false, TimeStamp = "14/07/2021"},
             };
+            */
 
             int nodeIdArray = 199;
 
@@ -107,22 +124,42 @@ namespace Progetto_Main
             }
         }
 
-        public void StartWatchDog()
+        public void StartNodeValues()
         {
             plc.StartAsync("opc.tcp://192.168.1.91:4840").GetAwaiter().GetResult();
             var items = new List<string>();
             items.Add(PLCGlobals.WatchDog);
+            items.Add(PLCGlobals.MessaggioDaPLC);
+            items.Add(PLCGlobals.Warning_in_corso);
+            items.Add(PLCGlobals.Emergenza_in_corso);
 
             plc.SubscribeToNodeChanges(items, 1000);
 
-            plc.NodeValueChanged += WatchDog_nodevalueChanged;
+            plc.NodeValueChanged += plc_nodevalueChanged;
         }
 
-        private void WatchDog_nodevalueChanged(object sender, NodeValueChangedNotification e)
+        private void plc_nodevalueChanged(object sender, NodeValueChangedNotification e)
         {
             plc.StartAsync("opc.tcp://192.168.1.91:4840").GetAwaiter().GetResult();
-            if ((bool)e.Value)
-                plc.WriteToNode(new NodeWritingRequest<bool>(PLCGlobals.WatchDog, false));
+
+            if (e.NodeId == PLCGlobals.WatchDog)
+            {
+                if ((bool)e.Value)
+                    plc.WriteToNode(new NodeWritingRequest<bool>(PLCGlobals.WatchDog, false));
+                return;
+            }
+            else if (e.NodeId == PLCGlobals.Emergenza_in_corso || e.NodeId == PLCGlobals.Warning_in_corso)
+            {
+                AggiornaStatoPLC();
+            }
+            else if (e.NodeId == PLCGlobals.MessaggioDaPLC)
+            {
+                if (string.IsNullOrEmpty((string)e.Value))
+                    return;
+
+                serverManager.RegistraMessaggio((string)e.Value, true);
+                plc.WriteToNode(new NodeWritingRequest<string>(PLCGlobals.MessaggioDaPLC, ""));
+            }
         }
     }
 }

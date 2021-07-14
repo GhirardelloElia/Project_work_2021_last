@@ -221,7 +221,6 @@
   <ItemGroup>
     <Compile Include="Allarme.cs" />
     <Compile Include="Commessa.cs" />
-    <Compile Include="CommessaDaInviare.cs" />
     <Compile Include="Messaggio.cs" />
     <Compile Include="MQTTManager.cs" />
     <Compile Include="NodeValueChangedNotification.cs" />

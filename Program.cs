@@ -11,20 +11,10 @@ namespace Progetto_Main
         static void Main(string[] args)
         {
             Console.WriteLine("Faccio partire il processo...");
-            //MQTTManager manager = new MQTTManager();
-            //manager.Subscribe();
-            //manager.Publish("Dio porco");
+            MQTTManager manager = new MQTTManager();
+            manager.Subscribe();
             PlcManager plcMan = new PlcManager();
-            //plcMan.ScriviCommessaInCoda(new Commessa("Ciccio", "Boia", "io", 6, 1));
-            plcMan.StartWatchDog();
-
-            foreach (var item in plcMan.GetAllarmi())
-            {
-                if (item != null)
-                    Console.WriteLine(item.Message);
-            }
-
-            plcMan.ScriviMessaggiAPlc();
+            plcMan.Start();
         }
     }
 }

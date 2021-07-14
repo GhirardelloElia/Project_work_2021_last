@@ -35,6 +35,7 @@ namespace Progetto_Main
         public static readonly string Array_Messaggi = $"ns={ns};i=197"; // Array di Messaggo[8]
         public static readonly string AbilitazioneDaUfficio = $"ns={ns};i=190";
         public static readonly string WatchDog = $"ns={ns};i=191";
+        public static readonly string MessaggioDaPLC = $"ns={ns};i=195";
 
         // Info generali
 
@@ -47,7 +48,7 @@ namespace Progetto_Main
         public static readonly string StatoMacchina = $"ns={ns};i=31"; // Array di bool[5]
         public static readonly string Emergenza_in_corso = $"ns={ns};i=32";
         public static readonly string Macchina_in_stop = $"ns={ns};i=33";
-        public static readonly string Stop_in_fase = $"ns={ns};i=34";
+        public static readonly string Warning_in_corso = $"ns={ns};i=34";
         public static readonly string Ciclo_auto_in_corso = $"ns={ns};i=35";
         public static readonly string Comandi_manuali_inseriti = $"ns={ns};i=36";
         public static readonly string Produzione_libera = $"ns={ns};i=37";
