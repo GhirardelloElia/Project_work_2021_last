@@ -1,2 +1,0 @@
-C:\Users\Ghirardello Elia\Desktop\Progetto\Project_work_2021_last\obj\Debug\Progetto_Main.csproj.AssemblyReference.cache
-C:\Users\Ghirardello Elia\Desktop\Progetto\Project_work_2021_last\obj\Debug\Progetto_Main.csproj.CoreCompileInputs.cache
