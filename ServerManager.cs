@@ -12,11 +12,24 @@ namespace Progetto_Main
     class ServerManager
     {
         private SqlConnection _sqlConnection = new SqlConnection("Server=tcp:servergestionale.database.windows.net,1433;Initial Catalog=DbProgetto2021;Persist Security Info=False;User ID=amministratore;Password=Vmware1!;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
+       
+        private SqlConnection _sqlConnection0 = new SqlConnection("Server=tcp:servergestionale.database.windows.net,1433;Initial Catalog=DbProgetto2021;Persist Security Info=False;User ID=amministratore;Password=Vmware1!;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
+
+        private SqlConnection _sqlConnection1 = new SqlConnection("Server=tcp:servergestionale.database.windows.net,1433;Initial Catalog=DbProgetto2021;Persist Security Info=False;User ID=amministratore;Password=Vmware1!;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
+
+        private SqlConnection _sqlConnection2 = new SqlConnection("Server=tcp:servergestionale.database.windows.net,1433;Initial Catalog=DbProgetto2021;Persist Security Info=False;User ID=amministratore;Password=Vmware1!;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
+
+        private SqlConnection _sqlConnection3 = new SqlConnection("Server=tcp:servergestionale.database.windows.net,1433;Initial Catalog=DbProgetto2021;Persist Security Info=False;User ID=amministratore;Password=Vmware1!;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
+
+        private SqlConnection _sqlConnection4 = new SqlConnection("Server=tcp:servergestionale.database.windows.net,1433;Initial Catalog=DbProgetto2021;Persist Security Info=False;User ID=amministratore;Password=Vmware1!;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
+
+        private SqlConnection _sqlConnection5 = new SqlConnection("Server=tcp:servergestionale.database.windows.net,1433;Initial Catalog=DbProgetto2021;Persist Security Info=False;User ID=amministratore;Password=Vmware1!;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
 
         public void UpdateCommessaInCorso(int pezziBuoni, int pezziScarti, int pezziTotali, int pezziDaFare, string codiceCommessa, string codiceCliente)
         {
             try
             {
+                _sqlConnection.Close();
                 _sqlConnection.Open();
 
                 SqlCommand command = new SqlCommand();
@@ -24,7 +37,7 @@ namespace Progetto_Main
                 command.CommandType = System.Data.CommandType.Text;
 
                 command.CommandText = $"UPDATE tbCommessa " +
-                    $"SET Pezzi_buoni = '{pezziBuoni}', Pezzi_scarti = '{pezziScarti}' " +
+                    $"SET Pezzi_buoni = '{pezziBuoni}', Pezzi_scarti = '{pezziScarti}', " +
                     $"Pezzi_totali = '{pezziTotali}', Da_produrre = '0', In_Produzione = '1', Prodotta = '0' " +
                     $"WHERE Codice_commessa = '{codiceCommessa}'; ";
 
@@ -50,10 +63,11 @@ namespace Progetto_Main
         {
             try
             {
-                _sqlConnection.Open();
+                _sqlConnection0.Close();
+                _sqlConnection0.Open();
 
                 SqlCommand command = new SqlCommand();
-                command.Connection = _sqlConnection;
+                command.Connection = _sqlConnection0;
                 command.CommandType = System.Data.CommandType.Text;
 
                 command.CommandText = $"UPDATE tbCommessa " +
@@ -71,7 +85,7 @@ namespace Progetto_Main
             }
             finally
             {
-                _sqlConnection.Close();
+                _sqlConnection0.Close();
             }
         }
 
@@ -79,10 +93,11 @@ namespace Progetto_Main
         {
             try
             {
-                _sqlConnection.Open();
+                _sqlConnection1.Close();
+                _sqlConnection1.Open();
 
                 SqlCommand command = new SqlCommand();
-                command.Connection = _sqlConnection;
+                command.Connection = _sqlConnection1;
                 command.CommandType = System.Data.CommandType.Text;
 
                 command.CommandText = $"INSERT INTO tbStoricoMessaggi (Messaggio, DaOperatore) " +
@@ -100,7 +115,7 @@ namespace Progetto_Main
             }
             finally
             {
-                _sqlConnection.Close();
+                _sqlConnection1.Close();
             }
 
             return 0;
@@ -110,15 +125,16 @@ namespace Progetto_Main
         {
             try
             {
-                _sqlConnection.Open();
+                _sqlConnection2.Close();
+                _sqlConnection2.Open();
 
                 SqlCommand command = new SqlCommand();
-                command.Connection = _sqlConnection;
+                command.Connection = _sqlConnection2;
                 command.CommandType = System.Data.CommandType.Text;
-                command.CommandText = "SELECT TOP 8 * from tbStoricoMessaggi ORDER BY DataMessaggio ASC";
-
+                command.CommandText = "SELECT TOP 8 * from tbStoricoMessaggi ORDER BY DataMessaggio DESC";
+                
                 if (index != 0)
-                    command.CommandText = $" SELECT * from tbStoricoMessaggi ORDER BY DataMessaggio ASC OFFSET ({index}) ROWS FETCH NEXT (8) ROWS ONLY";
+                    command.CommandText = $" SELECT * from tbStoricoMessaggi ORDER BY DataMessaggio DESC OFFSET ({index}) ROWS FETCH NEXT (8) ROWS ONLY";
 
 
                 SqlDataReader reader = command.ExecuteReader();
@@ -148,7 +164,7 @@ namespace Progetto_Main
             }
             finally
             {
-                _sqlConnection.Close();
+                _sqlConnection2.Close();
             }
         }
 
@@ -183,10 +199,11 @@ namespace Progetto_Main
         {
             try
             {
-                _sqlConnection.Open();
+                _sqlConnection3.Close();
+                _sqlConnection3.Open();
 
                 SqlCommand command = new SqlCommand();
-                command.Connection = _sqlConnection;
+                command.Connection = _sqlConnection3;
                 command.CommandType = System.Data.CommandType.Text;
 
                 command.CommandText = $"UPDATE tbStatoPLC SET " +
@@ -194,13 +211,13 @@ namespace Progetto_Main
                     $"isInWarning = '{(plc.IsInWarning ? 1 : 0)}', " +
                     $"isInErrore = '{(plc.IsInErrore ? 1 : 0)}', " +
                     $"isOnline = '{(plc.IsOnline ? 1 : 0)}', " +
-                    $"isWorking = '{(plc.IsInWarning ? 1 : 0)}', " +
+                    $"isWorking = '{(plc.IsWorking ? 1 : 0)}', " +
                     $"abilitazioneDaUfficio = '{(plc.AbilitazioneDaUfficio ? 1 : 0)}', " +
                     $"clienteInCorso = '{plc.clienteInCorso}', " +
                     $"pezziTotali = '{plc.pezziTotali}', " +
                     $"pezziBuoni = '{plc.pezziBuoni}', " +
                     $"pezziScarti = '{plc.pezziScarti}'," +
-                    $"ultimoAggiornamento = GETDATE() ";
+                    $"ultimoAggiornamento = dateadd(hour,2,getdate())";
 
                 command.ExecuteNonQuery();
 
@@ -213,7 +230,7 @@ namespace Progetto_Main
             }
             finally
             {
-                _sqlConnection.Close();
+                _sqlConnection3.Close();
             }
         }
 
@@ -221,10 +238,11 @@ namespace Progetto_Main
         {
             try
             {
-                _sqlConnection.Open();
+                _sqlConnection4.Close();
+                _sqlConnection4.Open();
 
                 SqlCommand command = new SqlCommand();
-                command.Connection = _sqlConnection;
+                command.Connection = _sqlConnection4;
                 command.CommandType = System.Data.CommandType.Text;
 
                 command.CommandText = $"INSERT INTO tbStoricoAllarmi (MessaggioAllarme, Codice_commessa_in_produzione, IsWarning) " +
@@ -241,7 +259,7 @@ namespace Progetto_Main
             }
             finally
             {
-                _sqlConnection.Close();
+                _sqlConnection4.Close();
             }
         }
 
@@ -249,12 +267,13 @@ namespace Progetto_Main
         {
             try
             {
-                _sqlConnection.Open();
+                _sqlConnection5.Close();
+                _sqlConnection5.Open();
 
                 bool res = false;
 
                 SqlCommand command = new SqlCommand();
-                command.Connection = _sqlConnection;
+                command.Connection = _sqlConnection5;
                 command.CommandType = System.Data.CommandType.Text;
                 command.CommandText = "SELECT abilitazioneDaUfficio from tbStatoPLC";
 
@@ -278,7 +297,7 @@ namespace Progetto_Main
             }
             finally
             {
-                _sqlConnection.Close();
+                _sqlConnection5.Close();
             }
         }
 

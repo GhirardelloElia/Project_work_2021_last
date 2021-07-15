@@ -136,8 +136,18 @@ namespace Progetto_Main
 
         public object ReadNodeValue(string nodeId)
         {
-            var foo = Session.ReadValue(nodeId); // TODO: NULL EXCEPTION
-            return foo.Value;
+            DIOCANE:
+            try
+            {
+                
+                var foo = Session.ReadValue(nodeId); // TODO: NULL EXCEPTION
+                return foo.Value;
+            }
+            catch (Exception)
+            {
+
+                goto DIOCANE;
+            }
         }
         public Node ReadNode(string nodeId)
         {

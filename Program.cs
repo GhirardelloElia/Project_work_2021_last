@@ -13,10 +13,10 @@ namespace Progetto_Main
             Console.WriteLine("Faccio partire il processo...");
             MQTTManager manager = new MQTTManager();
             manager.Subscribe();
-            Console.WriteLine("Commesso al MQTT");
+            Console.WriteLine("Connesso al MQTT");
             PlcManager plcMan = new PlcManager();
             plcMan.Start();
-            Console.WriteLine("Commesso al PLC");
+            Console.WriteLine("Connesso al PLC");
         }
     }
 }
