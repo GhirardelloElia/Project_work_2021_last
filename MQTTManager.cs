@@ -32,13 +32,15 @@ namespace Progetto_Main
             client.MqttMsgPublishReceived += client_MqttMsgPublishReceived;
 
             clientId = Guid.NewGuid().ToString();
-
             client.Connect(clientId);
 
             string messaggistica = "/THIENEPLC/sage/virus/IN/Message";
             string commesse = "/THIENEPLC/sage/virus/IN/IOT";
+            string abilitazioneDaUfficio = "/THIENEPLC/sage/virus/IN/AbMacchina";
 
-            client.Subscribe(new string[] { messaggistica, commesse }, new byte[] { 2 });
+            client.Subscribe(new string[] { messaggistica }, new byte[] { 2 });
+            client.Subscribe(new string[] { commesse }, new byte[] { 2 });
+            client.Subscribe(new string[] { abilitazioneDaUfficio }, new byte[] { 2 });
         }
 
         public void Publish (string message)
@@ -63,6 +65,10 @@ namespace Progetto_Main
             {
                 var commessa = JsonConvert.DeserializeObject<Commessa>(ReceivedMessage);
                 plc.ScriviCommessaInCoda(commessa);
+            }
+            else if (e.Topic == "/THIENEPLC/sage/virus/IN/AbMacchina")
+            {
+                new PlcManager().ScriviAbilitazioneDaUfficio(new ServerManager().LeggiAbilitazioneDaUfficio());
             }
         }
     }

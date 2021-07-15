@@ -13,10 +13,10 @@ namespace Progetto_Main
         // Dati per la commessa corrente 
 
         public static readonly string Codice_commessa_in_corso = $"ns={ns};i=8";
-        public static readonly string PezziDaProdurre = $"ns={ns}i=9";
-        public static readonly string Codice_prodotto = $"ns={ns}i=10";
-        public static readonly string Target_velocita = $"ns={ns}i=11";
-        public static readonly string Codice_cliente = $"ns={ns}i=12";
+        public static readonly string PezziDaProdurre = $"ns={ns};i=9";
+        public static readonly string Codice_prodotto = $"ns={ns};i=10";
+        public static readonly string Target_velocita = $"ns={ns};i=11";
+        public static readonly string Codice_cliente = $"ns={ns};i=12";
         public static readonly string PezziProdotti = $"ns={ns};i=13";
         public static readonly string PezziScarti = $"ns={ns};i=14";
         public static readonly string PezziMancanti = $"ns={ns};i=15";
@@ -36,6 +36,7 @@ namespace Progetto_Main
         public static readonly string AbilitazioneDaUfficio = $"ns={ns};i=190";
         public static readonly string WatchDog = $"ns={ns};i=191";
         public static readonly string MessaggioDaPLC = $"ns={ns};i=195";
+        public static readonly string IndexVisuale = $"ns={ns};i=196";
 
         // Info generali
 

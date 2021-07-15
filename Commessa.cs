@@ -10,7 +10,7 @@ namespace Progetto_Main
     {
         public string CodiceCommessa { get; set; }
         public string NomeProdotto { get; set; }
-        public Int16 Quantita { get; set; }
+        public Int32 Quantita { get; set; }
         public string NomeCliente { get; set; }
         public float VelocitaMacchina { get; set; }
     }
