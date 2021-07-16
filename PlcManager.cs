@@ -75,7 +75,7 @@ namespace Progetto_Main
             }
             finally
             {
-                plc.StopAsync();
+                //plc.StopAsync();
             }
         }
 
@@ -105,7 +105,7 @@ namespace Progetto_Main
             }
             finally
             {
-                plc.StopAsync();
+               // plc.StopAsync();
             }
         }
 
@@ -141,7 +141,7 @@ namespace Progetto_Main
             }
             finally
             {
-                plc.StopAsync();
+               // plc.StopAsync();
             }
         }
 
@@ -177,7 +177,7 @@ namespace Progetto_Main
             }
             finally
             {
-                plc.StopAsync();
+              //  plc.StopAsync();
             }
         }
 
@@ -204,7 +204,7 @@ namespace Progetto_Main
             }
             finally
             {
-                plc.StopAsync();
+              //  plc.StopAsync();
             }
         }
 
@@ -241,7 +241,7 @@ namespace Progetto_Main
                 }
                 finally
                 {
-                    plc.StopAsync();
+                   // plc.StopAsync();
                 }
             }
 
@@ -262,7 +262,7 @@ namespace Progetto_Main
             plc.SubscribeToNodeChanges(items, 1000);
 
             plc.NodeValueChanged += plc_nodevalueChanged;
-            plc.StopAsync();
+            //plc.StopAsync();
         }
 
         private void plc_nodevalueChanged(object sender, NodeValueChangedNotification e)
@@ -280,7 +280,7 @@ namespace Progetto_Main
                 ScriviMessaggiAPlc();
             }
 
-            plc.StopAsync();
+           // plc.StopAsync();
         }
 
         public void StartWatchDog()
