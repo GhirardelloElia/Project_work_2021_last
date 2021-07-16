@@ -306,7 +306,7 @@ namespace Progetto_Main
                     }
                 }
 
-                serverManager.ScriviAllarme(codiceCommessa, messaggioAllarme, true);
+                serverManager.ScriviAllarme(messaggioAllarme, codiceCommessa, true);
             }
             else if (e.NodeId == PLCGlobals.IndexVisuale)
             {
@@ -348,7 +348,7 @@ namespace Progetto_Main
                     }
                 }
 
-                serverManager.ScriviAllarme(codiceCommessa, messaggioAllarme, true);
+                serverManager.ScriviAllarme(messaggioAllarme, codiceCommessa, true);
             }
         }
 
