@@ -37,6 +37,7 @@ namespace Progetto_Main
         public static readonly string WatchDog = $"ns={ns};i=191";
         public static readonly string MessaggioDaPLC = $"ns={ns};i=195";
         public static readonly string IndexVisuale = $"ns={ns};i=196";
+        public static readonly string NewMESSAGE = $"ns={ns};i=236";
 
         // Info generali
 

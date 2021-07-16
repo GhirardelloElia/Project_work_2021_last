@@ -73,6 +73,10 @@ namespace Progetto_Main
             {
                 Console.WriteLine("Errore nell'aggiornamento dati stato PLC...");
             }
+            finally
+            {
+                plc.StopAsync();
+            }
         }
 
         // TODO: Il ricevimessaggio è un evento onchange della variabile. Ricorda di specificare
@@ -98,6 +102,10 @@ namespace Progetto_Main
             catch (Exception)
             {
                 Console.WriteLine("Errore nell'update della commessa in corso");
+            }
+            finally
+            {
+                plc.StopAsync();
             }
         }
 
@@ -131,6 +139,10 @@ namespace Progetto_Main
             {
                 Console.WriteLine("Errore nella scrittura della commessa in coda...");
             }
+            finally
+            {
+                plc.StopAsync();
+            }
         }
 
         public Allarme[] GetAllarmi()
@@ -163,6 +175,10 @@ namespace Progetto_Main
 
                 return new Allarme[1];
             }
+            finally
+            {
+                plc.StopAsync();
+            }
         }
 
         public void GetStatoMacchina()
@@ -186,9 +202,13 @@ namespace Progetto_Main
             {
                 Console.WriteLine("Errore nella scrittura abilitazione da ufficio...");
             }
+            finally
+            {
+                plc.StopAsync();
+            }
         }
 
-        public void ScriviMessaggiAPlc(UInt32 index = 0)
+        public void ScriviMessaggiAPlc(UInt32 index = 0, bool scriviflag = false)
         {
             plc.StartAsync("opc.tcp://192.168.1.91:4840").GetAwaiter().GetResult();
             Messaggio[] messaggi;
@@ -219,9 +239,18 @@ namespace Progetto_Main
                     Console.WriteLine("Errore nella scrittura dei messaggi a PLC...");
                     return;
                 }
+                finally
+                {
+                    plc.StopAsync();
+                }
             }
 
             Console.WriteLine("Scritti i messaggi a PLC...");
+            if (scriviflag)
+            {
+                plc.WriteToNode(new NodeWritingRequest<bool>(PLCGlobals.NewMESSAGE, true));
+                Console.WriteLine("Aggiornato il bit...");
+            }
         }
 
         public void StartMessaggistica()
@@ -233,6 +262,7 @@ namespace Progetto_Main
             plc.SubscribeToNodeChanges(items, 1000);
 
             plc.NodeValueChanged += plc_nodevalueChanged;
+            plc.StopAsync();
         }
 
         private void plc_nodevalueChanged(object sender, NodeValueChangedNotification e)
@@ -249,6 +279,8 @@ namespace Progetto_Main
                 plc.WriteToNode(new NodeWritingRequest<string>(PLCGlobals.MessaggioDaPLC, ""));
                 ScriviMessaggiAPlc();
             }
+
+            plc.StopAsync();
         }
 
         public void StartWatchDog()
@@ -329,9 +361,10 @@ namespace Progetto_Main
         private void Errore_nodevaluechanged(object sender, NodeValueChangedNotification e)
         {
             plc.StartAsync("opc.tcp://192.168.1.91:4840").GetAwaiter().GetResult();
-            Console.WriteLine("Bit emergenza cambiato...");
+            
             if (e.NodeId == PLCGlobals.Emergenza_in_corso)
             {
+                Console.WriteLine("Bit emergenza cambiato...");
                 AggiornaStatoPLC();
                 string codiceCommessa = (string)plc.ReadNodeValue(PLCGlobals.Codice_commessa_in_corso);
                 string messaggioAllarme = "Errore in codice c#";

@@ -59,7 +59,7 @@ namespace Progetto_Main
 
             if (e.Topic == "/THIENEPLC/sage/virus/IN/Message")
             {
-                plc.ScriviMessaggiAPlc();
+                plc.ScriviMessaggiAPlc(0, true);
             }
             else if (e.Topic == "/THIENEPLC/sage/virus/IN/IOT")
             {

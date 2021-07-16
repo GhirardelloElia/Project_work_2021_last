@@ -139,13 +139,16 @@ namespace Progetto_Main
             DIOCANE:
             try
             {
-                
+                if (Session is null)
+                {
+                    StartAsync("opc.tcp://192.168.1.91:4840").GetAwaiter().GetResult();
+                }
                 var foo = Session.ReadValue(nodeId); // TODO: NULL EXCEPTION
                 return foo.Value;
             }
             catch (Exception)
             {
-
+                Console.WriteLine("Security problem...");
                 goto DIOCANE;
             }
         }
