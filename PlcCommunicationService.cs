@@ -136,7 +136,6 @@ namespace Progetto_Main
 
         public object ReadNodeValue(string nodeId)
         {
-            DIOCANE:
             try
             {
                 if (Session is null)
@@ -149,7 +148,9 @@ namespace Progetto_Main
             catch (Exception)
             {
                 Console.WriteLine("Security problem...");
-                goto DIOCANE;
+                System.Diagnostics.Process.Start(System.Reflection.Assembly.GetEntryAssembly().Location);
+                Environment.Exit(1);
+                throw;
             }
         }
         public Node ReadNode(string nodeId)
